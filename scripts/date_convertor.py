@@ -57,7 +57,7 @@ def jalali_to_gregorian(jy,jm,jd):
     days%=146097
 
     if(days > 36524):
-        gy+=100*(int(--days/36524))
+        gy+=100*(int(days/36524))
         days%=36524
         if(days >= 365):
             days+=1
@@ -90,3 +90,41 @@ def jalali_to_gregorian(jy,jm,jd):
 # 2017/12/09 -> 1396/09/18
 assert (gregorian_to_jalali( 2017, 12, 9 ) == [1396,9,18]), "Date Converter is Invalid"
 assert (gregorian_to_jalali( 2009, 5, 5 ) == [1388,2,15]), "Date Converter is Invalid"
+import pandas as pd
+data = pd.read_csv('iran total market index.csv')
+print(data[1])
+import pandas as pd
+import numpy as np
+labels = ['dates' , 'price']
+data = pd.read_csv('iran total market index.csv' , header = 0, names = labels )
+dates = data['dates']
+def base_ten(x) : 
+    value = 1000 * x[3] + 100 * x[2] + 10 * x[1] + x[0]
+    return value
+for i in range(len(dates)):
+    year_digits = []
+    month_digits = []
+    day_digits = []
+    seper = list(iter(dates[i]))
+    counter = 0
+    i = 0
+    while i < len(seper) : 
+        if seper[i] == '/' :
+            counter == counter + 1
+            continue 
+        elif counter == 0 :
+            year_digits.append(int(seper[i]))
+        elif counter == 1 :
+            month_digits.append(int(seper[i]))
+        elif counter == 2 :
+            month_digits.append(int(seper[i]))
+    for i in range(4 - len(month_digits)):
+        month_digits.append(0)
+    for i in range(4 - len(day_digits)):
+        day_digits.append(0)
+    year = base_ten(year_digits)
+    month = base_ten(month_digits)
+    day = base_ten(day_digits)
+    dates[i] =  jalali_to_gregorian(year , month , day)
+    i = i + 1
+print(dates)
